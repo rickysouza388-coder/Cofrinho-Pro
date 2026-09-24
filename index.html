@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1c1c1e">
+  <title>Cofrinho Pro</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER PRINCIPAL -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-badge">🐷</div>
+      <span class="brand-title">COFRINHO <small class="pro-tag">PRO</small></span>
+    </div>
+    <button id="btnSettings" class="icon-btn">⚙️</button>
+  </header>
+
+  <!-- NAVEGAÇÃO PRINCIPAL -->
+  <main class="main-content">
+    
+    <!-- TELA 1: DASHBOARD / HISTÓRICO -->
+    <section id="view-dashboard" class="view active">
+      <!-- SELETOR DE MÊS -->
+      <div class="month-selector">
+        <button id="btnPrevMonth" class="month-nav">‹</button>
+        <span id="currentMonthLabel" class="month-label">Carregando...</span>
+        <button id="btnNextMonth" class="month-nav">›</button>
+      </div>
+
+      <!-- CARDS DE SALDO -->
+      <div class="balance-card">
+        <span class="balance-title">Saldo Total Acumulado</span>
+        <h2 id="totalBalance" class="balance-amount">R$ 0,00</h2>
+        <div class="balance-stats">
+          <div class="stat income">
+            <span class="stat-label">↑ Entradas</span>
+            <span id="monthIncome" class="stat-val">R$ 0,00</span>
+          </div>
+          <div class="stat expense">
+            <span class="stat-label">↓ Saídas</span>
+            <span id="monthExpense" class="stat-val">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUSCA EM TEMPO REAL -->
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Buscar na descrição...">
+      </div>
+
+      <!-- LISTA DE HISTÓRICO -->
+      <div class="section-title-row">
+        <h3>Lançamentos do Mês</h3>
+        <span id="txCountBadge" class="badge">0</span>
+      </div>
+      
+      <div id="transactionsList" class="tx-list">
+        <!-- Itens inseridos via JS -->
+      </div>
+    </section>
+
+    <!-- TELA 2: NOVO LANÇAMENTO -->
+    <section id="view-teclado" class="view">
+      <div class="teclado-header">
+        <!-- TOGGLE TIPO -->
+        <div class="type-toggle">
+          <button class="type-btn active expense" id="typeExpenseBtn">Saída</button>
+          <button class="type-btn income" id="typeIncomeBtn">Entrada</button>
+        </div>
+
+        <!-- DATA -->
+        <div class="date-picker-wrapper">
+          <span class="btn-pill-date" id="datePickerBtn">Hoje</span>
+          <input type="date" id="hiddenDateInput" class="real-date-input">
+        </div>
+      </div>
+
+      <!-- MOSTRADOR DE VALOR -->
+      <div class="display-amount" id="displayAmount">R$ 0,00</div>
+
+      <!-- CATEGORIAS PERSONALIZADAS -->
+      <label class="field-label">Categoria</label>
+      <div class="category-selector" id="categorySelector">
+        <button class="cat-pill active" data-cat="saida_drome">🏠 Saída Drome</button>
+        <button class="cat-pill" data-cat="saida_hec">🛒 Saída H/E/C</button>
+        <button class="cat-pill" data-cat="contas">📄 Contas</button>
+        <button class="cat-pill" data-cat="cofrinho">🐷 Cofrinho</button>
+        <button class="cat-pill" data-cat="entrada">💰 Entrada</button>
+      </div>
+
+      <!-- CAMPO DE DESCRIÇÃO -->
+      <div class="input-wrapper">
+        <label class="field-label" for="inputDescription">Descrição do Gasto / Lançamento</label>
+        <input type="text" id="inputDescription" class="desc-input" placeholder="Ex: Mercado mensal, Conta de luz, etc." maxlength="5000">
+      </div>
+
+      <!-- TECLADO NUMÉRICO -->
+      <div class="numpad">
+        <button class="num-btn" data-val="1">1</button>
+        <button class="num-btn" data-val="2">2</button>
+        <button class="num-btn" data-val="3">3</button>
+        <button class="num-btn" data-val="4">4</button>
+        <button class="num-btn" data-val="5">5</button>
+        <button class="num-btn" data-val="6">6</button>
+        <button class="num-btn" data-val="7">7</button>
+        <button class="num-btn" data-val="8">8</button>
+        <button class="num-btn" data-val="9">9</button>
+        <button class="num-btn" data-val=",">,</button>
+        <button class="num-btn" data-val="0">0</button>
+        <button class="num-btn action" id="btnBackspace">⌫</button>
+      </div>
+
+      <button class="btn-submit" id="btnSaveTransaction">Salvar Lançamento</button>
+    </section>
+
+  </main>
+
+  <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="navHome">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Painel</span>
+    </button>
+    <button class="nav-item add-btn" id="navAdd">
+      <span class="nav-icon">+</span>
+    </button>
+    <button class="nav-item" id="navSettings">
+      <span class="nav-icon">📁</span>
+      <span class="nav-label">Dados</span>
+    </button>
+  </nav>
+
+  <!-- MODAL DE EDIÇÃO -->
+  <div id="modalEdit" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3>Editar Lançamento</h3>
+      
+      <label for="editDesc">Descrição</label>
+      <input type="text" id="editDesc" maxlength="5000">
+      
+      <div class="row-fields">
+        <div>
+          <label for="editAmount">Valor (R$)</label>
+          <input type="number" step="0.01" id="editAmount">
+        </div>
+        <div>
+          <label for="editType">Tipo</label>
+          <select id="editType" class="modal-select">
+            <option value="despesa">Saída</option>
+            <option value="receita">Entrada</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="editCategory">Categoria</label>
+      <select id="editCategory" class="modal-select">
+        <option value="saida_drome">🏠 Saída Drome</option>
+        <option value="saida_hec">🛒 Saída H/E/C</option>
+        <option value="contas">📄 Contas</option>
+        <option value="cofrinho">🐷 Cofrinho</option>
+        <option value="entrada">💰 Entrada</option>
+      </select>
+      
+      <label for="editDate">Data</label>
+      <input type="date" id="editDate">
+      
+      <div class="modal-actions">
+        <button id="btnDeleteTx" class="btn-danger">Eliminar</button>
+        <div class="right-actions">
+          <button id="btnCancelEdit" class="btn-secondary">Cancelar</button>
+          <button id="btnSaveEdit" class="btn-primary">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE BACKUP / CONFIGURAÇÕES -->
+  <div id="modalSettings" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3>Gerenciar Dados</h3>
+      <p class="modal-sub">Exporte um backup seguro dos seus gastos ou importe um ficheiro existente.</p>
+
+      <button id="btnExportBackup" class="btn-backup">📥 Exportar Backup (JSON)</button>
+      
+      <label for="importFile" class="btn-backup outline">
+        📤 Importar Backup
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+      </label>
+
+      <div class="modal-actions" style="margin-top:20px;">
+        <button id="btnCloseSettings" class="btn-secondary" style="width:100%;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
