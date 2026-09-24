@@ -1,0 +1,16 @@
+{
+  "short_name": "Cofrinho",
+  "name": "Cofrinho Pro - Controle Financeiro",
+  "icons": [
+    {
+      "src": "https://fav.farm/🐷",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#000000",
+  "theme_color": "#1c1c1e",
+  "display": "standalone",
+  "orientation": "portrait"
+}
